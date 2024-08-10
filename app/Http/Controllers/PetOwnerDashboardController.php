@@ -23,7 +23,7 @@ class PetOwnerDashboardController extends Controller
         $userId = Auth::guard('petowner')->user()->id;
 
         // Retrieve the pets for the logged-in pet owner
-        $pets = Pet::where('petowner_id', $userId)->get();
+        $pets = Pet::where('petowner_id', $userId)->get();  
 
         // Pass the pets to the view
         return view('pet-owner.dashboard', compact('pets'));

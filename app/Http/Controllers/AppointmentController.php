@@ -50,16 +50,16 @@ class AppointmentController extends Controller
     }
 
     //* Show accepted appointments from pet boarding center and ask for payment method 
-    public function showAcceptedAppointments()
-    {
-        $acceptedAppointments = Appointment::where('petowner_id', Auth::id())
-                                           ->where('status', 'accepted')
-                                           ->where('payment_status', 'pending')
-                                           ->with(['boardingcenter', 'pet'])
-                                           ->get();
+    // public function showAcceptedAppointments()
+    // {
+    //     $acceptedAppointments = Appointment::where('petowner_id', Auth::id())
+    //                                        ->where('status', 'accepted')
+    //                                        ->where('payment_status', 'pending')
+    //                                        ->with(['boardingcenter', 'pet'])
+    //                                        ->get();
 
-        return view('pet-owner.dashboard', compact('acceptedAppointments'));
-    }
+    //     return view('pet-owner.dashboard', compact('acceptedAppointments'));
+    // }
 
     //* Select payment method
     public function selectPaymentMethod(Request $request, $id)

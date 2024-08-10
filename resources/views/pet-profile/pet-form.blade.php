@@ -104,13 +104,13 @@
                 <form method="POST" action="{{ route('pet.store') }}" enctype="multipart/form-data">
                     @csrf
                     <!-- Profile Image Section -->
-                    <div class="mb-4 text-center image-upload-container">
-                        <img src="{{ asset('images/puppyui.png') }}" alt="Pet Avatar" id="petAvatar">
-                        <input type="file" id="petPhoto" name="profile_picture" accept="image/*" onchange="previewImage(event)">
-                        <label for="petPhoto" class="upload-icon">
-                            <img src="{{ asset('images/images.png') }}" alt="Upload Icon">
-                        </label>
+
+                    <div class="mt-4">
+                        <label for="profile_picture" class="upload-icon">Upload a picture</label>
+                        <input type="file" id="photos" name="profile_picture" accept="image">
                     </div>
+                    
+
                     <!-- Pet Name Section -->
                     <div class="form-group">
                         <label for="pet_name">Pet Name</label>

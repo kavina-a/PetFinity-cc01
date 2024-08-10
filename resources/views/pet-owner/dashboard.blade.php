@@ -6,10 +6,68 @@
     <title>Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.3.1/css/bootstrap.min.css">
+
     @vite(['resources/css/app.css', 'resources/css/pet_owner_css/nav.css', 'resources/css/pet_owner_css/dashboard.css'])
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+
+        .greeting-box {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .greeting-box h3 {
+        font-family: 'Fredoka One', cursive;
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+
+    .greeting-box ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .greeting-box li {
+        display: inline-block;
+        margin-right: 15px;
+        text-align: center;
+    }
+
+    .greeting-box li img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%; /* This makes the image circular */
+        object-fit: cover;
+        border: 3px solid #ff6600; /* Add a border around the circle */
+    }
+
+    .greeting-box li:hover img {
+        border-color: #ff3300; /* Change the border color on hover */
+        transition: border-color 0.3s;
+    }
+
+    .button-add-pet {
+        background-color: #ff6600;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 15px;
+    }
+
+    .button-add-pet:hover {
+        background-color: #ff3300;
+        transition: background-color 0.3s;
+    }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -23,10 +81,23 @@
                 <div class="account-info"></div>
             </div>
 
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-danger">Logout</button>
+            </form>
+
             <!-- My Pets Section -->
             <div class="greeting-box">
                 <p>Here you can manage your pets and more.</p>
-                <h3>My Pets</h3>
+                <h3>My Pets</h3>                            
+                    @foreach($pets as $pet)
+                        <li data-pet-id="{{ $pet->id }}" onclick="showPetProfile({{ $pet->id }})">
+                            <a href="{{ route('pets.edit', $pet->id) }}">
+                                <img src="{{ Storage::url($pet->profile_picture) }}" alt="{{ $pet->pet_name }}">
+                            </a>
+                        </li>
+                        <br><br>
+                    @endforeach
                 <p>You don't have any pets yet.</p>
                 <a href="{{ route('pettype') }}">
                     <button class="button-add-pet">Add Pet</button>

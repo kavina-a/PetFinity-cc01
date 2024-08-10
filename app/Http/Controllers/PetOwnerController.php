@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Pet;
 use App\Models\PetOwner;
+use App\Models\Appointment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -22,9 +23,38 @@ class PetOwnerController extends Controller
     //* Show the dashboard
     public function index()
     {
-        return view('pet-owner.dashboard');
-    }
 
+        $user = Auth::guard('petowner')->user(); // Use the specific guard
+        $pets = Pet::where('petowner_id', $user->id)->get();
+        // return redirect()->route('pet-owner.showpets');
+
+        $acceptedAppointments = Appointment::where('petowner_id', Auth::id())
+                                       ->where('status', 'accepted')
+                                       ->where('payment_status', 'pending')
+                                       ->with(['boardingcenter', 'pet'])
+                                       ->get();
+
+        return view('pet-owner.dashboard', compact('pets', 'acceptedAppointments'));
+    }
+    
+
+    // public function showpets() {
+    //     $petowner = Auth::guard('petowner')->user();
+    
+    //     if (!$petowner) {
+    //         return redirect()->route('pet-owner.register')->withErrors(['error' => 'No logged-in pet owner found']);
+    //     }
+    
+    //     $pets = Pet::where('petowner_id', $petowner->id)->get();
+    
+    //     if ($pets->isEmpty()) {
+    //         return view('pet-owner.register', compact('pets'));
+    //     }
+    
+    //     return view('pet-owner.dashboard', compact('pets'));
+    // }
+
+    
     //* Register the pet owner
     public function register(Request $request)
     {
