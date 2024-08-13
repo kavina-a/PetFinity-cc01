@@ -22,6 +22,10 @@ use App\Providers\Filament\BoardingCenterPanelProvider;
 use App\Http\Controllers\PetOwnerProfileController;
 use App\Http\Controllers\PetTrainingProfileController;
 
+use App\Http\Controllers\Api\MissingPetController;
+use App\Http\Controllers\TaskCompletionController;
+
+
 // Auth::routes(['verify' => true]);
 
 //* Landing Page Routes start here
@@ -119,9 +123,25 @@ Route::middleware(['auth:petowner'])->group(function () {
     //* Route to handle payment selection
     Route::post('/appointment/{id}/select-payment-method', [AppointmentController::class, 'selectPaymentMethod'])->name('appointment.select-payment-method');
 
+    //lost and found related controllers
+    Route::get('petowner/missing-pets', [MissingPetController::class, 'index'])->name('missing_pets.index');
+    Route::get('petowner/missing-pets/create', [MissingPetController::class, 'create'])->name('missing_pets.create');
+    Route::post('petowner/missing-pets', [MissingPetController::class, 'store'])->name('missing_pets.store');
+    Route::get('petowner/missing-pets/map', [MissingPetController::class, 'map'])->name('missing_pets.map');
+
+    //pet status 
+    Route::get('petowner/activity-log/{id}', [AppointmentController::class, 'showActivityLog'])->name('pet.owner.activity-log'); //id refers to appoitment id
+    Route::get('petowner/appointment-history', [PetOwnerController::class, 'showAppointmentHistory'])->name('petowner.appointment-history');
+
 
 
 });
+
+
+
+
+
+
 
 //!MIDDLEWARE FOR PET TRAINING CENTER
 Route::middleware(['auth:trainingcenter'])->group(function () {
@@ -155,6 +175,11 @@ Route::middleware(['auth:boardingcenter'])->group(function () {
     //*pet boarding center's profile
     Route::get('/boarding-center/profile', [PetBoardingProfileController::class, 'edit'])->name('boarding-center.profile'); // Show profile edit form
     Route::put('/boarding-center/profile/update', [PetBoardingProfileController::class, 'update'])->name('profile.update'); // Update profile information
+
+    //routes for pet status update
+    Route::get('/boarding-center/managetasks/{id}', [AppointmentController::class, 'showTasks'])->name('pet.boardingcenter.managetasks');
+
+    Route::post('/task-completions/store/{appointment}', [TaskCompletionController::class, 'store'])->name('task-completions.store');
 
 });
 

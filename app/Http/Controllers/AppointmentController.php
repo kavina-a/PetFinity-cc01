@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Appointment;
 use App\Models\PetBoardingCenter;
+use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
 
 //Appointment Management from booking a boarding center to payment method selection (Pet Owner's pov)
 class AppointmentController extends Controller
@@ -77,5 +79,25 @@ class AppointmentController extends Controller
 
         return redirect()->route('pet-owner.dashboard')->with('success', 'Payment method selected successfully.');
     }
+
+    //pet status update feature code
+    public function showTasks($id)
+    {
+        $appointment = Appointment::with('pet', 'boardingcenter')->findOrFail($id);
+        $tasks = Task::all();
+    
+        return view('pet-boardingcenter.managetasks', compact('appointment', 'tasks'));
+    }
+
+    public function showActivityLog($appointmentId)
+{
+    $appointment = Appointment::with(['pet', 'boardingcenter', 'taskCompletions.task'])
+        ->findOrFail($appointmentId);
+
+    return view('pet-owner.activity-log', compact('appointment'));
+}
+
+    
+
 }
 

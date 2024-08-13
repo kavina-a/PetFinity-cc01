@@ -31,6 +31,7 @@ class PetController extends Controller
         return view('pet-profile.pet-form');
     }
 
+
     //* Store a new pet
     public function store(Request $request)
     {

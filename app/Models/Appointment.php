@@ -40,4 +40,10 @@ class Appointment extends Model
     {
         return $this->belongsTo(Pet::class, 'pet_id');
     }
+
+    //pet status
+    public function taskCompletions()
+    {
+        return $this->hasMany(TaskCompletion::class);
+    }
 }

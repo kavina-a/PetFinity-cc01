@@ -339,7 +339,7 @@
             <p class="no-appointments">No upcoming appointments.</p>
             @else
             @foreach($appointments as $appointment)
-            <div class="card mb-3">
+            <div class="mb-3 card">
                 <div class="card-body">
                     <h5 class="card-title"><i class="fas fa-calendar-alt icon"></i> Appointment for {{ $appointment->pet_name }}</h5>
                     <p class="card-text">
@@ -357,36 +357,6 @@
         </div>
     </div>
 
-    {{-- <div class="content">
-        <div class="container">
-            <h1>Booking History</h1>
-
-            @if($appointments->isEmpty())
-            <div class="alert alert-info">No bookings found.</div>
-            @else
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Pet Name</th>
-                        <th>Pet Owner</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($appointments as $appointment)
-                    <tr>
-                        <td>{{ $appointment->pet_name }}</td>
-                        <td>{{ $appointment->pet_owner_name }}</td>
-                        <td>{{ \Carbon\Carbon::parse($appointment->start_date)->format('d M Y H:i') }}</td>
-                        <td>{{ \Carbon\Carbon::parse($appointment->end_date)->format('d M Y H:i') }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-            @endif
-        </div>
-    </div> --}}
 
     <div class="navbar">
         <ul>

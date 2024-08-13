@@ -10,8 +10,41 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+
+        
+        .lost-and-found-section {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 20px;
+        }
+
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 10px;
+            text-align: center;
+            width: 30%;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
+
 <body class="bg-gray-50">
     <x-sidebar-nav />
 
@@ -33,12 +66,35 @@
                 </a>
             </div>
 
+             <!-- Lost and Found Section -->
+<div class="lost-and-found-section">
+    <div class="card">
+        <h2>View Map</h2>
+        <p>See last seen locations of missing pets.</p>
+        <a href="{{ route('missing_pets.map') }}" class="btn btn-primary">View Map</a>
+    </div>
+    <div class="card">
+        <h2>Report Missing Pet</h2>
+        <p>Report your pet as missing.</p>
+        <a href="{{ route('missing_pets.create') }}" class="btn btn-primary">Report Missing Pet</a>
+    </div>
+    <div class="card">
+        <h2>Report Sighting</h2>
+        <p>Report a sighting of a missing pet.</p>
+        <a href="#" class="btn btn-primary">Report Sighting</a>
+    </div>
+</div>
+            <!-- End Lost and Found Section -->
+
+            
             <!-- Services Section -->
             <div class="services-box">
                 <h2 class="services-title">Explore Our Services</h2>
                 <p>Discover amazing places for your pet. Click below to book appointments at pet boarding centers.</p>
                 <a href="{{ route('boarding-centers.index') }}" class="button-view-places">View All Pet Boarding Places</a>
             </div>
+
+             
             
             <!-- Accepted Appointments Section -->
             <div class="accepted-appointments-container">
@@ -130,7 +186,12 @@
             </div>
             <!-- End Community Events Section -->
 
+          
+
         </div>
     </div>
+    
 </body>
 </html>
+
+
