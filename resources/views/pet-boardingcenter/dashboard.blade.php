@@ -4,6 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @if(auth('petowner')->check())
+    <meta name="user-id" content="{{ auth('petowner')->user()->id }}">
+@elseif(auth('boardingcenter')->check())
+    <meta name="user-id" content="{{ auth('boardingcenter')->user()->id }}">
+@elseif(auth('trainingcenter')->check())
+    <meta name="user-id" content="{{ auth('trainingcenter')->user()->id }}">
+@endif
     <title>Dashboard</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
@@ -248,6 +255,11 @@
             Welcome to PetFinity
         </div>
     </div>
+
+    
+    <a href="{{ route(config('chatify.routes.prefix')) }}" class="btn btn-primary">
+        Go to Messenger
+    </a>
 
     <div class="bottom-navbar">
         <ul>

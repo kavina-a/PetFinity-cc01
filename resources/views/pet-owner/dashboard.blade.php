@@ -2,7 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @if(auth('petowner')->check())
+    <meta name="user-id" content="{{ auth('petowner')->user()->id }}">
+@elseif(auth('boardingcenter')->check())
+    <meta name="user-id" content="{{ auth('boardingcenter')->user()->id }}">
+@elseif(auth('trainingcenter')->check())
+    <meta name="user-id" content="{{ auth('trainingcenter')->user()->id }}">
+@endif
     <title>Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -628,6 +636,11 @@
                 <p>Discover amazing places for your pet. Click below to book appointments at pet boarding centers.</p>
                 <a href="{{ route('boarding-centers.index') }}" class="button-view-places">View All Pet Boarding Places</a>
             </div>
+
+            <a href="{{ route(config('chatify.routes.prefix')) }}" class="btn btn-primary">
+                Go to Messenger
+            </a>
+            
             
             <!-- Accepted Appointments Section -->
             <div class="accepted-appointments-container">
