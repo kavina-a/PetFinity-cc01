@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @if(auth('petowner')->check())
-    <meta name="user-id" content="{{ auth('petowner')->user()->id }}">
-    <meta name="user-type" content="petowner">
-@elseif(auth('petboarder')->check())
-    <meta name="user-id" content="{{ auth('petboarder')->user()->id }}">
-    <meta name="user-type" content="petboarder">
-@elseif(auth('pettrainer')->check())
-    <meta name="user-id" content="{{ auth('pettrainer')->user()->id }}">
-    <meta name="user-type" content="pettrainer">
-@endif
+        <meta name="user-id" content="{{ auth('petowner')->user()->id }}">
+        <meta name="user-type" content="petowner">
+    @elseif(auth('petboarder')->check())
+        <meta name="user-id" content="{{ auth('boardingcenter')->user()->id }}">
+        <meta name="user-type" content="petboarder">
+    @elseif(auth('pettrainer')->check())
+        <meta name="user-id" content="{{ auth('trainingcenter')->user()->id }}">
+        <meta name="user-type" content="pettrainer">
+    @endif
     <title>Activity Log</title>
     <style>
         body {
@@ -83,13 +83,30 @@
             @endforeach
         </div>
     </div>
-    <script src="{{ asset('PetFinity-cc01/resources/js/bootstrap.js') }}"></script><script>
-        Echo.private(`pet-status.${userId}`)
-            .listen('PetStatusUpdated', (e) => {
-                console.log(e.status);
-                alert('Pet status updated: ' + e.status);
-            });
-    </script>
-    
+
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.11.1/dist/echo.iife.js"></script>
+
+<script>
+    window.Pusher = Pusher;
+
+    window.Echo = new Echo({
+        broadcaster: 'pusher',
+        key: '{{ env("PUSHER_APP_KEY") }}',
+        cluster: '{{ env("PUSHER_APP_CLUSTER") }}',
+        forceTLS: true,
+        encrypted: true,
+    });
+
+    const userId = document.head.querySelector('meta[name="user-id"]').content;
+
+    window.Echo.private(`pet-status.${userId}`)
+        .listen('PetStatusUpdated', (e) => {
+            console.log('Pet Status Updated:', e.task_name);
+            alert('Your pet\'s status has been updated: ' + e.task_name);
+        });
+</script>
+
+
 </body>
 </html>

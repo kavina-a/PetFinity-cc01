@@ -7,11 +7,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.3.1/css/bootstrap.min.css">
     @vite(['resources/css/app.css', 'resources/css/pet_owner_css/nav.css', 'resources/css/pet_owner_css/dashboard.css'])
+
+    <!-- Meta tags for user ID and user type -->
+    @if(auth('petowner')->check())
+        <meta name="user-id" content="{{ auth('petowner')->user()->id }}">
+        <meta name="user-type" content="petowner">
+    @elseif(auth('petboarder')->check())
+        <meta name="user-id" content="{{ auth('petboarder')->user()->id }}">
+        <meta name="user-type" content="petboarder">
+    @elseif(auth('pettrainer')->check())
+        <meta name="user-id" content="{{ auth('pettrainer')->user()->id }}">
+        <meta name="user-type" content="pettrainer">
+    @endif
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
 
-        
+        /* Your existing CSS styles */
         .lost-and-found-section {
             display: flex;
             justify-content: space-around;
@@ -66,27 +79,80 @@
                 </a>
             </div>
 
-             <!-- Lost and Found Section -->
-<div class="lost-and-found-section">
-    <div class="card">
-        <h2>View Map</h2>
-        <p>See last seen locations of missing pets.</p>
-        <a href="{{ route('missing_pets.map') }}" class="btn btn-primary">View Map</a>
-    </div>
-    <div class="card">
-        <h2>Report Missing Pet</h2>
-        <p>Report your pet as missing.</p>
-        <a href="{{ route('missing_pets.create') }}" class="btn btn-primary">Report Missing Pet</a>
-    </div>
-    <div class="card">
-        <h2>Report Sighting</h2>
-        <p>Report a sighting of a missing pet.</p>
-        <a href="#" class="btn btn-primary">Report Sighting</a>
-    </div>
-</div>
+            <!-- Lost and Found Section -->
+            <div class="lost-and-found-section">
+                <div class="card">
+                    <h2>View Map</h2>
+                    <p>See last seen locations of missing pets.</p>
+                    <a href="{{ route('missing_pets.map') }}" class="btn btn-primary">View Map</a>
+                </div>
+                <div class="card">
+                    <h2>Report Missing Pet</h2>
+                    <p>Report your pet as missing.</p>
+                    <a href="{{ route('missing_pets.create') }}" class="btn btn-primary">Report Missing Pet</a>
+                </div>
+                <div class="card">
+                    <h2>Report Sighting</h2>
+                    <p>Report a sighting of a missing pet.</p>
+                    <a href="#" class="btn btn-primary">Report Sighting</a>
+                </div>
+            </div>
             <!-- End Lost and Found Section -->
+<!-- Pet Activity Log Section -->
+<div style="padding: 20px; border-radius: 10px; background-color: #fff; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); max-width: 100%; margin: 20px auto;">
+    <h2 style="text-align: center; font-weight: bold; font-family: 'Nunito', sans-serif; margin-bottom: 20px;">Appointment Management</h2>
+
+    <!-- Ongoing Appointments -->
+    @if($ongoingAppointments->isEmpty())
+        <p style="text-align: center; font-size: 16px; color: #555;">No ongoing appointments currently.</p>
+    @else
+        <div style="display: flex; flex-direction: column; align-items: center;">
+            @foreach($ongoingAppointments as $appointment)
+                <div style="width: 100%; border: 1px solid #ddd; border-radius: 8px; padding: 20px; background-color: #f9f9f9; margin-bottom: 20px; max-width: 500px;">
+                    <div style="margin-bottom: 10px;">
+                        <h5 style="font-weight: bold; color: #333;">Ongoing Appointment for: {{ $appointment->pet->pet_name }}</h5>
+                        <p><strong>Boarding Center:</strong> {{ $appointment->boardingcenter->business_name }}</p>
+                        <p><strong>Start Date:</strong> {{ $appointment->start_date }}</p>
+                        <p><strong>End Date:</strong> {{ $appointment->end_date }}</p>
+                        <p><strong>Check-in Time:</strong> {{ $appointment->check_in_time }}</p>
+                        <p><strong>Check-out Time:</strong> {{ $appointment->check_out_time }}</p>
+                        <p><strong>Special Notes:</strong> {{ $appointment->special_notes }}</p>
+                    </div>
+                    <!-- Activity Log Button -->
+                    <a href="{{ route('pet.owner.activity-log', $appointment->id) }}" style="display: block; text-align: center; margin-bottom: 10px;">
+                        <button style="width: 100%; padding: 12px; font-size: 16px; background-color: #ff6600; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Show Activity Log</button>
+                    </a>
+                </div>
+            @endforeach
+        </div>
+    @endif
+
+    <!-- Appointment History Section -->
+    @if(!$pastAppointments->isEmpty())
+        <div style="text-align: center; margin-top: 30px;">
+            <h5 style="font-weight: bold; color: #333;">Activity Log History</h5>
+            <a href="{{ route('petowner.appointment-history') }}" style="display: block;">
+                <button style="width: 100%; padding: 12px; font-size: 16px; background-color: #ff6600; color: #fff; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px;">View Activity Log History</button>
+            </a>
+        </div>
+    @endif
+</div>
+
+<!-- Additional Styles for Mobile Responsiveness -->
+<style>
+    @media (max-width: 768px) {
+        div[style*="max-width: 500px"] {
+            max-width: 100%;
+        }
+    }
+</style>
+
+
+
+            <!-- Pet Activity Log Section -->   
 
             
+
             <!-- Services Section -->
             <div class="services-box">
                 <h2 class="services-title">Explore Our Services</h2>
@@ -94,8 +160,6 @@
                 <a href="{{ route('boarding-centers.index') }}" class="button-view-places">View All Pet Boarding Places</a>
             </div>
 
-             
-            
             <!-- Accepted Appointments Section -->
             <div class="accepted-appointments-container">
                 <h2 class="section-title">Accepted Appointments</h2>
@@ -116,6 +180,7 @@
                                     <strong>Status:</strong> {{ $appointment->status }}<br>
                                     <strong>Payment Status:</strong> {{ $appointment->payment_status }}
                                 </p>
+                                
                                 <form action="{{ route('appointment.select-payment-method', $appointment->id) }}" method="POST">
                                     @csrf
                                     <div class="form-group">
@@ -186,12 +251,35 @@
             </div>
             <!-- End Community Events Section -->
 
-          
-
         </div>
     </div>
     
+    <!-- Include Pusher and Laravel Echo -->
+   <!-- Include Pusher and Laravel Echo -->
+<script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.11.1/dist/echo.iife.js"></script>
+
+<script>
+    window.Pusher = Pusher;
+
+    window.Echo = new Echo({
+        broadcaster: 'pusher',
+        key: '{{ env("PUSHER_APP_KEY") }}',
+        cluster: '{{ env("PUSHER_APP_CLUSTER") }}',
+        forceTLS: true,
+        encrypted: true,
+    });
+
+    const userId = document.head.querySelector('meta[name="user-id"]').content;
+
+    window.Echo.private(`pet-status.${userId}`)
+        .listen('PetStatusUpdated', (e) => {
+            console.log('Pet Status Updated:', e.task_name);
+            alert('Your pet\'s status has been updated: ' + e.task_name);
+        });
+</script>
+
+    
+
 </body>
 </html>
-
-

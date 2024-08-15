@@ -28,14 +28,12 @@ class TaskCompletionController extends Controller
         event(new PetStatusUpdated($taskCompletion));
 
         // Notify the pet owner
-        $appointment->load('petowner');
+        $appointment->load('petowner'); // Ensure the pet owner relationship is loaded
         $appointment->petowner->notify(new TaskCompletedNotification($taskCompletion));
 
-
-        // Notify the pet owner
-        // $appointment = Appointment::with('petowner')->findOrFail($appointment->id);
-        // $appointment->petowner->notify(new TaskCompletedNotification($taskCompletion));
-
-        return back()->with('success', 'Task marked as completed!');
+       // return back()->with('success', 'Task marked as completed!');
+          // Redirect to the manage tasks page with a success message
+          return redirect()->route('pet.boardingcenter.managetasks', $appointment->id)
+          ->with('success', 'Task marked as completed!');
     }
 }

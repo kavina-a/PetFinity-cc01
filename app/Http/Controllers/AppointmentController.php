@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
@@ -8,8 +7,6 @@ use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-
-//Appointment Management from booking a boarding center to payment method selection (Pet Owner's pov)
 class AppointmentController extends Controller
 {
     //* Booking a boarding center
@@ -80,7 +77,10 @@ class AppointmentController extends Controller
         return redirect()->route('pet-owner.dashboard')->with('success', 'Payment method selected successfully.');
     }
 
-    //pet status update feature code
+
+
+    
+    // Pet status update feature: Show tasks for an appointment
     public function showTasks($id)
     {
         $appointment = Appointment::with('pet', 'boardingcenter')->findOrFail($id);
@@ -89,15 +89,51 @@ class AppointmentController extends Controller
         return view('pet-boardingcenter.managetasks', compact('appointment', 'tasks'));
     }
 
+    // Show Activity Log
     public function showActivityLog($appointmentId)
+    {
+        $appointment = Appointment::with(['pet', 'boardingcenter', 'taskCompletions.task'])
+            ->findOrFail($appointmentId);
+
+        return view('pet-owner.activity-log', compact('appointment'));
+    }
+
+    // Pet status in the dashboard view (for pet owners)
+    public function showOngoingAndPastAppointments()
+    {
+        $ongoingAppointments = Appointment::where('petowner_id', Auth::id())
+            ->where('status', 'accepted')
+            ->whereDate('end_date', '>=', now())
+            ->with(['boardingcenter', 'pet'])
+            ->get();
+
+        $pastAppointments = Appointment::where('petowner_id', Auth::id())
+            ->where('status', 'accepted')
+            ->whereDate('end_date', '<', now())
+            ->with(['boardingcenter', 'pet'])
+            ->get();
+
+        $acceptedAppointments = Appointment::where('petowner_id', Auth::id())
+            ->where('status', 'accepted')
+            ->with(['boardingcenter', 'pet'])
+            ->get();
+
+        return view('pet-owner.dashboard', compact('ongoingAppointments', 'pastAppointments', 'acceptedAppointments'));
+    }
+
+
+    public function showManageTasksList()
 {
-    $appointment = Appointment::with(['pet', 'boardingcenter', 'taskCompletions.task'])
-        ->findOrFail($appointmentId);
+    $boardingCenterId = Auth::id(); // Get the authenticated boarding center's ID
 
-    return view('pet-owner.activity-log', compact('appointment'));
+    // Fetch all ongoing appointments for this boarding center
+    $ongoingAppointments = Appointment::where('boardingcenter_id', $boardingCenterId)
+        ->where('status', 'accepted')
+        ->whereDate('end_date', '>=', now())
+        ->with(['pet', 'boardingcenter'])
+        ->get();
+
+    return view('pet-boardingcenter.managetaskslist', compact('ongoingAppointments'));
 }
-
-    
-
+   
 }
-

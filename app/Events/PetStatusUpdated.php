@@ -1,6 +1,42 @@
 <?php
 
 namespace App\Events;
+
+use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Queue\SerializesModels;
+
+class PetStatusUpdated implements ShouldBroadcast
+{
+    use SerializesModels;
+
+    public $status;
+
+    public function __construct($status)
+    {
+        $this->status = $status;
+    }
+
+    public function broadcastOn()
+    {
+        // Broadcast to a private channel for the pet owner
+        return new PrivateChannel('pet-status.' . $this->status->appointment->petowner_id);
+    }
+
+    public function broadcastWith()
+    {
+        return [
+            'task_name' => $this->status->task->name,
+            'completed_at' => $this->status->completed_at,
+            'notes' => $this->status->notes,
+        ];
+    }
+}
+
+/*
+
+namespace App\Events;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -38,3 +74,5 @@ class PetStatusUpdated implements ShouldBroadcast
         return ['status' => $this->status];
     }
 }
+    */
+    
