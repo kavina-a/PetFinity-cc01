@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\MissingPet;
 use App\Models\Pet;
+use App\Models\FoundReport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -24,68 +25,49 @@ class MissingPetController extends Controller
     }
 
     public function store(Request $request)
-{
-    // Validate the common fields
-    $request->validate([
-        'pet_id' => 'required|exists:pets,id',
-        'last_seen_location' => 'required|string',
-        'last_seen_date' => 'required|date',
-        'last_seen_time' => 'required',
-        'distinguishing_features' => 'required|string',
-        'additional_info' => 'nullable|string',
-        'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-    ]);
-
-    // Check if the user used the map for location
-    if ($request->has('use_map') && $request->use_map == 'on') {
-        // Validate the latitude and longitude if map is used
+    {
         $request->validate([
-            'last_seen_location_latitude' => 'required|numeric',
-            'last_seen_location_longitude' => 'required|numeric',
+            'pet_id' => 'required|exists:pets,id',
+            'last_seen_location' => 'required|string',
+            'last_seen_date' => 'required|date',
+            'last_seen_time' => 'required',
+            'distinguishing_features' => 'required|string',
+            'additional_info' => 'nullable|string',
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-    }
 
-    $data = $request->only([
-        'pet_id',
-        'last_seen_location',
-        'last_seen_date',
-        'last_seen_time',
-        'distinguishing_features',
-        'additional_info',
-    ]);
+        // Use Google Maps Geocoding API to get latitude and longitude
+        $geocodeUrl = 'https://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($request->last_seen_location) . '&key=' . env('GOOGLE_MAPS_API_KEY');
 
-    // Store the photo
-    if ($request->hasFile('photo')) {
-        $data['photo'] = $request->file('photo')->store('missing_pets', 'public');
-    }
+        $response = file_get_contents($geocodeUrl);
+        $response = json_decode($response);
 
-    // Add user ID to the data
-    $data['petowner_id'] = Auth::id();
+        if (isset($response->results[0])) {
+            $latitude = $response->results[0]->geometry->location->lat;
+            $longitude = $response->results[0]->geometry->location->lng;
+        } else {
+            return redirect()->back()->withErrors(['last_seen_location' => 'Unable to geocode location']);
+        }
 
-    // If the map is used, add latitude and longitude to the data
-    if ($request->has('use_map') && $request->use_map == 'on') {
-        $data['last_seen_location_latitude'] = $request->last_seen_location_latitude;
-        $data['last_seen_location_longitude'] = $request->last_seen_location_longitude;
-    }
+        $data = $request->all();
+        $data['last_seen_location_latitude'] = $latitude;
+        $data['last_seen_location_longitude'] = $longitude;
 
-    // Attempt to create the missing pet entry
-    try {
+        if ($request->hasFile('photo')) {
+            $data['photo'] = $request->file('photo')->store('missing_pets', 'public');
+        }
+
+        $data['petowner_id'] = Auth::id();
+
         MissingPet::create($data);
-    } catch (\Exception $e) {
-        Log::error('Error saving missing pet: ' . $e->getMessage());
-        return redirect()->back()->withErrors(['error' => 'There was an error saving the missing pet.']);
+
+        return redirect()->route('missing_pets.index')->with('success', 'Missing pet reported successfully.');
     }
 
-    return redirect()->route('missing_pets.index')->with('success', 'Missing pet reported successfully.');
-}
     public function map()
     {
         $missingPets = MissingPet::with('pet')->get();
-
-
-    
-
-        return view('missing_pets.map', compact('missingPets'));
+        $sightings = FoundReport::all(); // Fetch sightings as well
+        return view('missing_pets.map', compact('missingPets', 'sightings'));
     }
 }
-

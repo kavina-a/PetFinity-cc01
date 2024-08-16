@@ -23,7 +23,10 @@ use App\Http\Controllers\PetOwnerProfileController;
 use App\Http\Controllers\PetTrainingProfileController;
 
 use App\Http\Controllers\Api\MissingPetController;
+use App\Http\Controllers\Api\FoundReportController;
 use App\Http\Controllers\TaskCompletionController;
+
+
 use Illuminate\Support\Facades\Broadcast;
 
 //broadcasting route
@@ -127,10 +130,26 @@ Route::middleware(['auth:petowner'])->group(function () {
     Route::post('/appointment/{id}/select-payment-method', [AppointmentController::class, 'selectPaymentMethod'])->name('appointment.select-payment-method');
 
     //lost and found related controllers
-    Route::get('petowner/missing-pets', [MissingPetController::class, 'index'])->name('missing_pets.index');
-    Route::get('petowner/missing-pets/create', [MissingPetController::class, 'create'])->name('missing_pets.create');
-    Route::post('petowner/missing-pets', [MissingPetController::class, 'store'])->name('missing_pets.store');
-    Route::get('petowner/missing-pets/map', [MissingPetController::class, 'map'])->name('missing_pets.map');
+    Route::get('/missing-pets', [MissingPetController::class, 'index'])->name('missing_pets.index');
+    Route::get('/missing-pets/create', [MissingPetController::class, 'create'])->name('missing_pets.create');
+    Route::post('/missing-pets', [MissingPetController::class, 'store'])->name('missing_pets.store');
+    Route::get('/missing-pets/map', [MissingPetController::class, 'map'])->name('missing_pets.map');
+
+    // Routes for Found Reports (sighted pets)
+    Route::get('/found-reports', [FoundReportController::class, 'index'])->name('found_reports.index');
+    Route::get('/found-reports/create/{missing_pet_id}', [FoundReportController::class, 'create'])->name('found_reports.create');
+   // Route::post('/found-reports', [FoundReportController::class, 'store'])->name('found_reports.store');
+   Route::post('/found_reports/store/{id}', [FoundReportController::class, 'store'])->name('found_reports.store');
+
+
+    // Routes for Found Reports (sighted pets)
+//Route::get('/found-reports', [FoundReportController::class, 'index'])->name('found_reports.index');
+//Route::get('/found-reports/create/{missingPetId}', [FoundReportController::class, 'create'])->name('found_reports.create');
+//Route::post('/found-reports', [FoundReportController::class, 'store'])->name('found_reports.store');
+
+    
+
+
 
     //pet status 
     Route::get('petowner/activity-log/{id}', [AppointmentController::class, 'showActivityLog'])->name('pet.owner.activity-log'); //id refers to appoitment id

@@ -4,30 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Report Missing Pet</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         body {
-            font-family: 'Nunito', sans-serif;
-            background-color: #f8f9fa;
-            margin: 0;
-            padding: 0;
+            background-color: #FFBE98; /* Peach Fuzz */
+            font-family: 'Fredoka One', cursive, sans-serif;
         }
 
         .container {
             max-width: 600px;
             margin: 50px auto;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid #EA785B; /* Terra Cotta */
         }
 
         h1 {
-            font-family: 'Fredoka One', cursive;
-            margin-bottom: 20px;
-            color: #333;
+            text-align: center;
+            color: #EA785B; /* Terra Cotta */
+            position: relative;
+        }
+
+        .paw-print-top {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/0/0c/Light_paw_print.svg') no-repeat center center;
+            background-size: contain;
         }
 
         .form-group {
@@ -35,39 +42,64 @@
         }
 
         .form-group label {
+            display: block;
             font-weight: bold;
+            color: #EA785B;
+            margin-bottom: 5px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 2px solid #EA785B; /* Terra Cotta */
+            background-color: #F0BBB4; /* Spanish Pink */
+            box-sizing: border-box;
+        }
+
+        .form-control:focus {
+            border-color: #EA785B;
+            outline: none;
+            box-shadow: 0 0 5px rgba(234, 120, 91, 0.5);
         }
 
         .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #EA785B;
+            border-color: #EA785B;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 10px;
+            font-size: 18px;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
         }
 
         .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #004080;
+            background-color: #D25F51; /* Darker Terra Cotta */
+            border-color: #D25F51;
         }
 
-        .scrollable {
-            max-height: 500px;
-            overflow-y: auto;
-        }
-
-        #map {
-            height: 300px;
-            margin-bottom: 20px;
-        }
-
-        .manual-address {
-            display: none;
+        .paw-print-bottom {
+            display: block;
+            margin: 20px auto 0;
+            width: 50px;
+            height: 50px;
+            background: url('https://upload.wikimedia.org/wikipedia/commons/0/0c/Light_paw_print.svg') no-repeat center center;
+            background-size: contain;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <div class="paw-print-top"></div>
     <h1>Report Missing Pet</h1>
-    <form method="POST" action="{{ route('missing_pets.store') }}" enctype="multipart/form-data" class="scrollable" id="missingPetForm">
+    <form method="POST" action="{{ route('missing_pets.store') }}" enctype="multipart/form-data">
         @csrf
         <div class="form-group">
             <label for="pet_id">Pet</label>
@@ -97,101 +129,10 @@
             <label for="photo">Photo</label>
             <input type="file" name="photo" id="photo" class="form-control" required>
         </div>
-        <div class="form-group">
-            <input type="checkbox" id="use_map" name="use_map" onclick="toggleManualAddress()">
-            <label for="use_map">Use Map to Select Location</label>
-        </div>
-        <div class="manual-address">
-            <div class="form-group">
-                <label for="latitude">Latitude</label>
-                <input type="text" name="last_seen_location_latitude" id="latitude" class="form-control">
-            </div>
-            <div class="form-group">
-                <label for="longitude">Longitude</label>
-                <input type="text" name="last_seen_location_longitude" id="longitude" class="form-control">
-            </div>
-            <button type="button" class="btn btn-secondary" onclick="getLocation()">Use Current Location</button>
-        </div>
-        <div id="map" style="display: none;"></div>
-        <button type="submit" class="btn btn-primary">Report Missing Pet</button>
+        <button type="submit" class="btn-primary">Report Missing Pet</button>
+        <div class="paw-print-bottom"></div>
     </form>
 </div>
-
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script>
-    function toggleManualAddress() {
-        var checkBox = document.getElementById("use_map");
-        var manualAddress = document.querySelector(".manual-address");
-        var map = document.getElementById("map");
-
-        if (checkBox.checked) {
-            manualAddress.style.display = "block";
-            map.style.display = "block";
-            initMap();
-            document.getElementById("latitude").required = true;
-            document.getElementById("longitude").required = true;
-        } else {
-            manualAddress.style.display = "none";
-            map.style.display = "none";
-            document.getElementById("latitude").required = false;
-            document.getElementById("longitude").required = false;
-        }
-    }
-
-    function initMap() {
-        var map = L.map('map').setView([51.505, -0.09], 13);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        var marker;
-
-        map.on('click', function(e) {
-            if (marker) {
-                map.removeLayer(marker);
-            }
-            marker = L.marker(e.latlng).addTo(map);
-            document.getElementById('latitude').value = e.latlng.lat;
-            document.getElementById('longitude').value = e.latlng.lng;
-        });
-    }
-
-    function getLocation() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition, showError);
-        } else {
-            alert("Geolocation is not supported by this browser.");
-        }
-    }
-
-    function showPosition(position) {
-        document.getElementById("latitude").value = position.coords.latitude;
-        document.getElementById("longitude").value = position.coords.longitude;
-        if (marker) {
-            map.removeLayer(marker);
-        }
-        marker = L.marker([position.coords.latitude, position.coords.longitude]).addTo(map);
-        map.setView([position.coords.latitude, position.coords.longitude], 13);
-    }
-
-    function showError(error) {
-        switch(error.code) {
-            case error.PERMISSION_DENIED:
-                alert("User denied the request for Geolocation.");
-                break;
-            case error.POSITION_UNAVAILABLE:
-                alert("Location information is unavailable.");
-                break;
-            case error.TIMEOUT:
-                alert("The request to get user location timed out.");
-                break;
-            case error.UNKNOWN_ERROR:
-                alert("An unknown error occurred.");
-                break;
-        }
-    }
-</script>
 
 </body>
 </html>

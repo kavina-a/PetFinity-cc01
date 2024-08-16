@@ -12,6 +12,7 @@
         "blade-ui-kit/blade-icons": "^1.6",
         "codeat3/blade-carbon-icons": "^2.28",
         "filament/filament": "^3.2",
+        "guzzlehttp/guzzle": "^7.9",
         "laravel/framework": "^11.9",
         "laravel/jetstream": "^5.1",
         "laravel/reverb": "^1.0",
