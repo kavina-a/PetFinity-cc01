@@ -32,6 +32,8 @@ class PetController extends Controller
     }
 
     // Store a new pet
+
+    //* Store a new pet
     public function store(Request $request)
     {
         $request->validate([

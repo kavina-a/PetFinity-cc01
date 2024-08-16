@@ -247,7 +247,18 @@
         <div class="welcome-message">
             Welcome to PetFinity
         </div>
+
+        <!-- Updated Manage Tasks Section -->
+<div class="card">
+    <div class="card-header">
+        Manage Tasks
     </div>
+    <div class="card-body">
+        <a href="{{ route('pet.boardingcenter.managetasks.list') }}" class="btn btn-primary">Manage Tasks</a>
+    </div>
+</div>
+<!-- End of Manage Tasks Section -->
+
 
     <div class="bottom-navbar">
         <ul>

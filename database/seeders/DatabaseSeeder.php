@@ -2,22 +2,27 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
-    public function run(): void
+    public function run()
     {
-        // User::factory(10)->create();
+        // Truncate tables to avoid duplicate entries
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::table('sightings')->truncate();
+        DB::table('missing_pets')->truncate();
+        DB::table('pets')->truncate();
+        DB::table('pet_owners')->truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $this->call([
+            PetOwnerSeeder::class,
+            PetSeeder::class,
+            MissingPetSeeder::class,
+            SightingSeeder::class,
+            
         ]);
     }
 }

@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
+use App\Models\Appointment;
+
 // Pet Owner Management
 class PetOwnerController extends Controller
 {
@@ -94,5 +96,15 @@ class PetOwnerController extends Controller
             'pets_owned' => $data['pets_owned'],
             'referral_source' => $data['referral_source'],
         ]);
+    }
+
+    //pet status
+    public function showAppointmentHistory(Request $request)
+    {
+        $appointments = Appointment::where('petowner_id', auth()->id())
+                        ->with('taskCompletions.task') // Ensure taskCompletions and related tasks are eager loaded
+                        ->get();
+
+        return view('pet-owner.appointment-history', compact('appointments'));
     }
 }
