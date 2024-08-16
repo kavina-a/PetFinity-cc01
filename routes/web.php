@@ -22,6 +22,26 @@ use App\Providers\Filament\BoardingCenterPanelProvider;
 use App\Http\Controllers\PetOwnerProfileController;
 use App\Http\Controllers\PetTrainingProfileController;
 
+
+//chat route
+Route::middleware(['auth:petowner,boardingcenter,trainingcenter'])->group(function () {
+    Route::get('/chat', function () {
+        return view('chat');
+    })->name('chat');
+});
+
+use App\Http\Controllers\ConversationController;
+use App\Http\Controllers\ChatController;
+
+//Route::get('/start-conversation', [ConversationController::class, 'create'])->name('conversation.create');
+//Route::post('/start-conversation', [ConversationController::class, 'store'])->name('conversation.store');
+//Route::get('/chat', [ChatController::class, 'index'])->name('chat');
+
+
+
+
+
+
 // Auth::routes(['verify' => true]);
 
 //* Landing Page Routes start here
@@ -119,6 +139,11 @@ Route::middleware(['auth:petowner'])->group(function () {
     //* Route to handle payment selection
     Route::post('/appointment/{id}/select-payment-method', [AppointmentController::class, 'selectPaymentMethod'])->name('appointment.select-payment-method');
 
+
+    //chat routes
+    Route::get('/start-conversation', [ConversationController::class, 'create'])->name('conversation.create');
+Route::post('/start-conversation', [ConversationController::class, 'store'])->name('conversation.store');
+Route::get('/chat', [ChatController::class, 'index'])->name('chat');
 
 
 });
