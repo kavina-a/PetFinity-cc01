@@ -26,6 +26,7 @@
             border-radius: 16px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             border: 2px solid #ff6600;
+            position: relative;
         }
 
         .header {
@@ -145,6 +146,32 @@
             text-align: center;
         }
 
+        .back-button {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #ff6600;
+            font-weight: 600;
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            background-color: #fff;
+            padding: 10px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #ff6600;
+            color: #fff;
+        }
+
+        .back-button i {
+            margin-right: 8px;
+            font-size: 1.2em;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
@@ -204,6 +231,10 @@
 </head>
 
 <body>
+    <a href="{{ route('pet-owner.dashboard') }}" class="back-button" {{ Route::is('pet-owner.dashboard') ? 'active' : '' }}">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+
     <div class="container">
         <div class="header">
             <h2>Activity Log History</h2>
