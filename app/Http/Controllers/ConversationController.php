@@ -21,16 +21,17 @@ class ConversationController extends Controller
 
     public function store(Request $request)
 {
-   
-
-
     // Validate the request
     $request->validate([
         'boardingcenter_id' => 'required|exists:pet_boarding_centers,id',
     ]);
 
-    // Create a new conversation
-    $conversation = Conversation::create(['title' => 'New Conversation']);
+    // Fetch participants' names
+    $petOwnerName = Auth::user()->name;
+    $boardingCenterName = PetBoardingCenter::find($request->boardingcenter_id)->business_name;
+
+    // Create a new conversation with a dynamic title
+    $conversation = Conversation::create(['title' => "{$petOwnerName} & {$boardingCenterName}"]);
 
     // Add participants
     // Add the Pet Owner

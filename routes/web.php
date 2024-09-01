@@ -37,6 +37,13 @@ use App\Http\Controllers\ChatController;
 //Route::post('/start-conversation', [ConversationController::class, 'store'])->name('conversation.store');
 //Route::get('/chat', [ChatController::class, 'index'])->name('chat');
 
+Route::middleware(['auth:petowner,boardingcenter,trainingcenter'])->group(function () {
+    Route::get('/chat', [ChatController::class, 'index'])->name('chat');
+    Route::get('/start-conversation', [ConversationController::class, 'create'])->name('conversation.create');
+    Route::post('/start-conversation', [ConversationController::class, 'store'])->name('conversation.store');
+});
+
+
 
 
 
@@ -141,9 +148,9 @@ Route::middleware(['auth:petowner'])->group(function () {
 
 
     //chat routes
-    Route::get('/start-conversation', [ConversationController::class, 'create'])->name('conversation.create');
-Route::post('/start-conversation', [ConversationController::class, 'store'])->name('conversation.store');
-Route::get('/chat', [ChatController::class, 'index'])->name('chat');
+    //Route::get('/start-conversation', [ConversationController::class, 'create'])->name('conversation.create');
+    //Route::post('/start-conversation', [ConversationController::class, 'store'])->name('conversation.store');
+    
 
 
 });

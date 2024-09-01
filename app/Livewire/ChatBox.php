@@ -1,5 +1,6 @@
 <?php
 namespace App\Livewire;
+
 use Livewire\Component;
 use App\Models\Message;
 use App\Models\Conversation;
@@ -13,6 +14,7 @@ class ChatBox extends Component
 
     protected $listeners = ['openConversation'];
 
+    // This method is needed to handle the event
     public function openConversation($conversationId)
     {
         $this->conversationId = $conversationId;
@@ -38,8 +40,6 @@ class ChatBox extends Component
 
     private function getReceiverId()
     {
-        // Logic to determine the receiver ID (the other participant in the conversation)
-        // Assuming the conversation has two participants
         $conversation = Conversation::find($this->conversationId);
         $participant = $conversation->participants->firstWhere('participant_id', '!=', Auth::id());
 
@@ -48,7 +48,6 @@ class ChatBox extends Component
 
     private function getReceiverType()
     {
-        // Logic to determine the receiver type (e.g., PetBoardingCenter or PetOwner)
         $conversation = Conversation::find($this->conversationId);
         $participant = $conversation->participants->firstWhere('participant_id', '!=', Auth::id());
 
